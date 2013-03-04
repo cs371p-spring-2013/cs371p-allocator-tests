@@ -116,7 +116,7 @@ struct OurTests : CppUnit::TestFixture {
 
     /* test if the allocator is allocated correctly */
     void test_constructor () {
-        if (A::allocator_size <= value_size + 2 * sentinel_size) {
+        if (A::allocator_size < value_size + 2 * sentinel_size) {
             try {
                 A x;
                 CPPUNIT_ASSERT (false);}
@@ -132,7 +132,7 @@ struct OurTests : CppUnit::TestFixture {
 
     /* test if view can read the sentinel value given the char pointer */
     void test_view_1 () {
-        if (A::allocator_size <= value_size + 2 * sentinel_size) {
+        if (A::allocator_size < value_size + 2 * sentinel_size) {
             try {
                 A x;
                 CPPUNIT_ASSERT (false);}
@@ -145,7 +145,7 @@ struct OurTests : CppUnit::TestFixture {
 
     /* test if view can modify the sentinel value (aka is it returning l-value) */
     void test_view_2 () {
-        if (A::allocator_size <= value_size + 2 * sentinel_size) {
+        if (A::allocator_size < value_size + 2 * sentinel_size) {
             try {
                 A x;
                 CPPUNIT_ASSERT (false);}
@@ -159,7 +159,7 @@ struct OurTests : CppUnit::TestFixture {
     
     /* test if view can write to any location given a char pointer */
     void test_view_3 () {
-        if (A::allocator_size <= value_size + 2 * sentinel_size) {
+        if (A::allocator_size < value_size + 2 * sentinel_size) {
             try {
                 A x;
                 CPPUNIT_ASSERT (false);}
@@ -177,7 +177,7 @@ struct OurTests : CppUnit::TestFixture {
 
     /* test if valid works for the initial allocator (with 2 correct sentinels) */
     void test_valid_1 () {
-        if (A::allocator_size <= value_size + 2 * sentinel_size) {
+        if (A::allocator_size < value_size + 2 * sentinel_size) {
             try {
                 A x;
                 CPPUNIT_ASSERT (false);}
@@ -189,7 +189,7 @@ struct OurTests : CppUnit::TestFixture {
     
     /* test if valid returns false with an incorrect sentinel */
     void test_valid_2 () {
-        if (A::allocator_size <= value_size + 2 * sentinel_size) {
+        if (A::allocator_size < value_size + 2 * sentinel_size) {
             try {
                 A x;
                 CPPUNIT_ASSERT (false);}
@@ -201,7 +201,7 @@ struct OurTests : CppUnit::TestFixture {
 
     /* test if valid works for a negative pair of sentinels */
     void test_valid_3 () {
-        if (A::allocator_size <= value_size + 2 * sentinel_size) {
+        if (A::allocator_size < value_size + 2 * sentinel_size) {
             try {
                 A x;
                 CPPUNIT_ASSERT (false);}
@@ -219,7 +219,7 @@ struct OurTests : CppUnit::TestFixture {
 
     /* test if allocate correctly adds and modifies sentinels */
     void test_allocate_1 () {
-        if (A::allocator_size <= value_size + 2 * sentinel_size) {
+        if (A::allocator_size < value_size + 2 * sentinel_size) {
             try {
                 A x;
                 CPPUNIT_ASSERT (false);}
@@ -235,7 +235,7 @@ struct OurTests : CppUnit::TestFixture {
 
     /* test if multiple allocate calls correctly add and modify sentinels */
     void test_allocate_2 () {
-        if (A::allocator_size <= value_size + 2 * sentinel_size) {
+        if (A::allocator_size < value_size + 2 * sentinel_size) {
             try {
                 A x;
                 CPPUNIT_ASSERT (false);}
@@ -255,7 +255,7 @@ struct OurTests : CppUnit::TestFixture {
 
     /* test if bad_alloc exception is thrown for attempting to allocate negative space */
     void test_allocate_3 () {
-        if (A::allocator_size <= value_size + 2 * sentinel_size) {
+        if (A::allocator_size < value_size + 2 * sentinel_size) {
             try {
                 A x;
                 CPPUNIT_ASSERT (false);}
@@ -269,7 +269,7 @@ struct OurTests : CppUnit::TestFixture {
 
     /* test if bad_alloc exception is thrown when there is not enough space to allocate */
     void test_allocate_4 () {
-        if (A::allocator_size <= value_size + 2 * sentinel_size) {
+        if (A::allocator_size < value_size + 2 * sentinel_size) {
             try {
                 A x;
                 CPPUNIT_ASSERT (false);}
@@ -287,7 +287,7 @@ struct OurTests : CppUnit::TestFixture {
 
     /* test if deallocate correctly changes negative sentinel values to positive */
     void test_deallocate_1 () {
-        if (A::allocator_size <= value_size + 2 * sentinel_size) {
+        if (A::allocator_size < value_size + 2 * sentinel_size) {
             try {
                 A x;
                 CPPUNIT_ASSERT (false);}
@@ -303,7 +303,7 @@ struct OurTests : CppUnit::TestFixture {
 
     /* test if deallocate does not merge this block with adjacent busy blocks */
     void test_deallocate_2 () {
-        if (A::allocator_size <= value_size + 2 * sentinel_size) {
+        if (A::allocator_size < value_size + 2 * sentinel_size) {
             try {
                 A x;
                 CPPUNIT_ASSERT (false);}
@@ -322,7 +322,7 @@ struct OurTests : CppUnit::TestFixture {
 
     /* test if deallocate merges this block with adjacent free blocks */
     void test_deallocate_3 () {
-        if (A::allocator_size <= value_size + 2 * sentinel_size) {
+        if (A::allocator_size < value_size + 2 * sentinel_size) {
             try {
                 A x;
                 CPPUNIT_ASSERT (false);}
