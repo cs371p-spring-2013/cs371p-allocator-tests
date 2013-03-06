@@ -55,7 +55,6 @@ struct Test_C_Allocator : CppUnit::TestFixture {
     // --------
 
     void test_one () {
-		  cout << "[C++ Allocator Test:1]......\n";		
         A x;
         const difference_type s = 1;
         const value_type      v = 2;
@@ -71,7 +70,6 @@ struct Test_C_Allocator : CppUnit::TestFixture {
     // --------
 
     void test_two () {
-		  cout << "[C++ Allocator Test:2]......\n";		
         A x;
         const difference_type s = 20;
         const value_type      v = 2;
@@ -87,7 +85,6 @@ struct Test_C_Allocator : CppUnit::TestFixture {
     // --------
 
     void test_ten () {
-		  cout << "[C++ Allocator Test:10]......\n";		
         A x;
         const difference_type s = 10;
         const value_type      v = 2;
@@ -111,7 +108,6 @@ struct Test_C_Allocator : CppUnit::TestFixture {
         x.deallocate(b, s);}
 
     void test_bad () {
-		  cout << "[C++ Allocator Test:Bad]......\n";			
         A x;
         const difference_type s = 20;
         const pointer b = x.allocate(s);
@@ -155,13 +151,17 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
     // --------
 
 	void test_constructor_1(){
-		cout << "[Test constructor 1]......" <<  endl ;
-		A x;
-		CPPUNIT_ASSERT(true);		
+		try{
+			A x;
+			CPPUNIT_ASSERT(true);
+		}catch(bad_alloc& exception){
+
+		}
+
+		
 	}
 
 	void test_constructor_2(){
-		cout << "[Test constructor 2]......" <<  endl ;
 		Allocator<int, 8> x;
 		Allocator<int, 8> y;
 		Allocator<double, 8> z;
@@ -169,7 +169,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
 	}
 
 	void test_constructor_3(){
-		cout << "[Test constructor 3]......" <<  endl ;
 		try{
 			Allocator<int, 1> x;
 			Allocator<int, 2> y;
@@ -182,10 +181,15 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
 	}
 
 	void test_constructor_4(){
-		cout << "[Test constructor 4]......" <<  endl ;
-		A x;
-		Allocator<int, 100> y;
-		CPPUNIT_ASSERT(true);	
+
+		try{
+			A x;
+			Allocator<int, 100> y;
+			CPPUNIT_ASSERT(true);
+		}catch(bad_alloc& exception){
+
+		}
+	
 	}
 
     // --------
@@ -193,7 +197,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
     // --------
 
 	void test_valid_1(){
-		cout << "[Test valid 1]......" <<  endl ;
 		try{
 			A x;
 			CPPUNIT_ASSERT(true);
@@ -203,7 +206,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
 	}
 
 	void test_valid_2(){
-		cout << "[Test valid 2]......" <<  endl ;
 		try{
 			A x;
 			const int size = 2;
@@ -215,7 +217,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
 	}
 
 	void test_valid_3(){
-		cout << "[Test valid 3]......" <<   endl ;
 		try{
 			A x;
 			const int size = 13;
@@ -228,7 +229,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
 	}
 
 	void test_valid_4(){
-		cout << "[Test valid 4]......"  << endl ;
 		try{
 			A x;
 			x.allocate(22);
@@ -240,7 +240,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
 	}
 
 	void test_valid_5(){
-		cout << "[Test valid 5]......" << endl;
 		try{
 			A x;
 			x.allocate(25);
@@ -256,7 +255,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
     // --------
 
 	void test_allocate_1(){
-		cout << "[Test allocate 1]......\n";
 		try{
 			A x;
 		   const difference_type s = 2;
@@ -278,7 +276,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
 	}
 
 	void test_allocate_2(){
-		cout << "[Test allocate 2]......\n";
 		try{
 			A x;
 		   const difference_type s = 5;
@@ -302,7 +299,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
 	}
 
 	void test_allocate_3(){
-			cout << "[Test allocate 3]......\n";
 		try{
 			A x;
 		   const difference_type s = 3;
@@ -326,7 +322,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
 	}
 
 	void test_allocate_4(){
-		cout << "[Test allocate 4]......\n";
 		try{
 			A x;
 		   difference_type s = 1;
@@ -371,7 +366,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
     // --------
 
 	void test_deallocate_1(){ //only block
-		cout << "[Test Deallocate 1]......\n";
 		try{
 			A x;
 			pointer p = x.allocate(10);
@@ -383,7 +377,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
 	}
 
 	void test_deallocate_2(){
-		cout << "[Test Deallocate 2]......\n";
 		try{
 			A x;
 		 	pointer p = x.allocate(10);
@@ -397,7 +390,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
 	}
 
 	void test_deallocate_3(){
-		cout << "[Test Deallocate 3]......\n";
 		try{
 			A x;
 			x.allocate(10);
@@ -410,7 +402,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
 	}
 
 	void test_deallocate_4(){
-		cout << "[Test Deallocate 4]......\n";
 
 		try{
 			A x;
@@ -427,7 +418,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
 	}
 
 	void test_deallocate_5(){
-		cout << "[Test Deallocate 5]......\n";
 
 		try{
 			A x;
@@ -445,7 +435,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
 	}
 
 	void test_deallocate_6(){
-		cout << "[Test Deallocate 6]......\n";
 
 
 		try{
@@ -465,7 +454,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
 	}
 
 	void test_deallocate_7(){
-		cout << "[Test Deallocate 7]......\n";
 
 		try{
 			A x;
@@ -484,7 +472,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
 	}
 
 	void test_deallocate_8(){
-		cout << "[Test Deallocate 8]......\n";
 
 		try{
 			A x;
@@ -503,7 +490,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
 	}
 
 	void test_deallocate_9(){
-		cout << "[Test Deallocate 9]......\n";
 
 		try{
 			A x;
@@ -513,71 +499,6 @@ struct Test_Our_Allocator : CppUnit::TestFixture {
 		}catch(bad_alloc& exception){
 		}
 	}
-
-
-    // --------
-    // test_merge()
-    // --------
-	//test simple merge of 2 free blocks that returns pointer to left block
-	void test_merge_1 () {
-		cout << "[Test merge 1].......\n";
-		try {
-			A x;
-			pointer b1 = x.allocate(2);
-			pointer b2 = x.allocate(3);
-			char* b1_left_sentinel = (char*)b1 - x.sentinel_size;
-			char* b2_left_sentinel = (char*)b2 - x.sentinel_size;
-			*reinterpret_cast<int*>(b1_left_sentinel) = 8; //making left sentinels positive
-			*reinterpret_cast<int*>(b2_left_sentinel) = 24;	
-			pointer result = x.merge(b1_left_sentinel,b2_left_sentinel);
-			CPPUNIT_ASSERT(true); 
-			CPPUNIT_ASSERT(result == b1);
-		}
-		catch (bad_alloc& exception) {}
-	}
-
-	//test that second parameter pointer is not changed
-	void test_merge_2 () { 
-		cout << "[Test merge 2]......\n";
-		try {
-			A x;
-			pointer value_after_block1_sentinel = x.allocate(3);
-			pointer value_after_block2_sentinel = x.allocate(4);
-			pointer value_after_block3_sentinel = x.allocate(12);
-			char* block1_left_sentinel = (char*)value_after_block1_sentinel - x.sentinel_size;
-			char* block2_left_sentinel = (char*)value_after_block2_sentinel - x.sentinel_size;
-			char* block3_left_sentinel = (char*)value_after_block3_sentinel - x.sentinel_size;
-			*reinterpret_cast<int*>(block1_left_sentinel) = 12;
-			*reinterpret_cast<int*>(block2_left_sentinel) = 16;
-			*reinterpret_cast<int*>(block3_left_sentinel) = 48;
-			pointer b2b3merge = x.merge(block2_left_sentinel, block3_left_sentinel);
-			pointer result = x.merge(block1_left_sentinel, block2_left_sentinel);
-			CPPUNIT_ASSERT(result == value_after_block1_sentinel);
-			CPPUNIT_ASSERT(b2b3merge == value_after_block2_sentinel);
-			CPPUNIT_ASSERT(*reinterpret_cast<int*>(block3_left_sentinel) == 48);	
-			CPPUNIT_ASSERT(*reinterpret_cast<int*>(block1_left_sentinel) == 92);
-		}catch (bad_alloc& exception) {}
-	}
-
-	//simple merge
-	void test_merge_3 () {
-		cout << "[Test merge 3].......\n";
-		try {
-			A x;
-			pointer value_after_sentinel = x.allocate(15);
-			pointer value_after_another_sentinel = x.allocate(3);
-			char* block_sentinel = (char*)value_after_sentinel - x.sentinel_size;
-			char* another_block_sentinel = (char*)value_after_another_sentinel - x.sentinel_size;
-			*reinterpret_cast<int*>(block_sentinel) = 60;
-			*reinterpret_cast<int*>(another_block_sentinel) = 24;
-			x.merge(block_sentinel, another_block_sentinel);
-			CPPUNIT_ASSERT(true);
-			
-		} catch (...) {}
-	}
-
-
-
 
     // -----
     // suite
@@ -627,7 +548,6 @@ struct Test_Merge : CppUnit::TestFixture {
     // --------
 	//test simple merge of 2 free blocks that returns pointer to left block
 	void test_merge_1 () {
-		cout << "[Test merge 1].......\n";
 		try {
 			A x;
 			pointer b1 = x.allocate(2);
@@ -645,7 +565,6 @@ struct Test_Merge : CppUnit::TestFixture {
 
 	//test that second parameter pointer is not changed
 	void test_merge_2 () { 
-		cout << "[Test merge 2]......\n";
 		try {
 			A x;
 			pointer value_after_block1_sentinel = x.allocate(3);
@@ -668,7 +587,6 @@ struct Test_Merge : CppUnit::TestFixture {
 
 	//simple merge
 	void test_merge_3 () {
-		cout << "[Test merge 3].......\n";
 		try {
 			A x;
 			pointer value_after_sentinel = x.allocate(15);
@@ -734,6 +652,19 @@ int main () {
 	 tr1.addTest(Test_Our_Allocator< Allocator<char, 50> >::suite());
 	 tr1.addTest(Test_Our_Allocator< Allocator<long, 50> >::suite());
 	 tr1.addTest(Test_Our_Allocator< Allocator<long long, 50> >::suite());
+	 tr1.addTest(Test_Our_Allocator< Allocator<int, 9999999> >::suite());
+	 tr1.addTest(Test_Our_Allocator< Allocator<double, 9999999> >::suite());
+	 tr1.addTest(Test_Our_Allocator< Allocator<float, 9999999> >::suite());
+	 tr1.addTest(Test_Our_Allocator< Allocator<char, 9999999> >::suite());
+	 tr1.addTest(Test_Our_Allocator< Allocator<long, 9999999> >::suite());
+	 tr1.addTest(Test_Our_Allocator< Allocator<long long, 9999999> >::suite());
+	 tr1.addTest(Test_Our_Allocator< Allocator<int, 1> >::suite());
+	 tr1.addTest(Test_Our_Allocator< Allocator<double, 1> >::suite());
+	 tr1.addTest(Test_Our_Allocator< Allocator<float, 1> >::suite());
+	 tr1.addTest(Test_Our_Allocator< Allocator<char, 1> >::suite());
+	 tr1.addTest(Test_Our_Allocator< Allocator<long, 1> >::suite());
+	 tr1.addTest(Test_Our_Allocator< Allocator<long long, 1> >::suite());
+
     tr1.run();
 
 
