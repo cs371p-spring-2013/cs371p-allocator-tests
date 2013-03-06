@@ -172,6 +172,18 @@ struct MyTests : CppUnit::TestFixture
     CPPUNIT_ASSERT (!invalid.isValid ());
   }
 
+  void valid7 ()
+  {
+    A invalid;
+    value_type* valAddr1 = invalid.allocate (5);
+    value_type* valAddr2 = invalid.allocate (3);
+    int* intAddr = reinterpret_cast <int*> (valAddr2);
+    intAddr -= 1;
+    invalid.deallocate (valAddr1);
+    *intAddr = -*intAddr;
+    CPPUNIT_ASSERT (!invalid.isValid ());
+  }
+
   void test2 ()
   {
     A alligator;
@@ -512,6 +524,27 @@ struct MyTests : CppUnit::TestFixture
     CPPUNIT_ASSERT (*intAddr1 == 92);
   }
 
+  void test16 ()
+  {
+    int test = 0;
+    A alligator;
+    int* addr = 0;
+    try
+    {
+      addr = reinterpret_cast <int*> (alligator.allocate
+                                                (92 / sizeof (value_type)));
+    }
+    catch (...)
+    {
+      ++test;
+    }
+
+    CPPUNIT_ASSERT (!test);
+    CPPUNIT_ASSERT (*(addr - 1) == -92);
+
+    alligator.allocate (1);
+  }
+
   CPPUNIT_TEST_SUITE (MyTests);
   CPPUNIT_TEST (valid1);
   CPPUNIT_TEST (valid2);
@@ -519,6 +552,7 @@ struct MyTests : CppUnit::TestFixture
   CPPUNIT_TEST (valid4);
   CPPUNIT_TEST (valid5);
   CPPUNIT_TEST (valid6);
+  CPPUNIT_TEST (valid7);
   CPPUNIT_TEST (test2);
   CPPUNIT_TEST (test3);
   CPPUNIT_TEST (test4);
@@ -533,6 +567,7 @@ struct MyTests : CppUnit::TestFixture
   CPPUNIT_TEST (test13);
   CPPUNIT_TEST (test14);
   CPPUNIT_TEST (test15);
+  CPPUNIT_TEST_EXCEPTION (test16, std::bad_alloc);
   CPPUNIT_TEST_SUITE_END ();
 };
 
