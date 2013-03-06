@@ -69,7 +69,7 @@ struct TestAllocator : CppUnit::TestFixture {
     // test_ten
     // --------
 
-  void test_ten () {
+	void test_ten () {
 		A x;
 		const difference_type s = 10;
 		const value_type v = 2;
@@ -172,10 +172,10 @@ struct TestMyAllocator : CppUnit::TestFixture {
     
     void test_constructor_3 () {
     	try{
-		    Allocator<long, 9> B;
+		    Allocator<long, 7> B;
 		    CPPUNIT_ASSERT(false);
     	}
-    	catch (std::bad_alloc::bad_alloc& e){
+    	catch (std::bad_alloc& e){
 			CPPUNIT_ASSERT(true);    	
     	}
     }
@@ -262,7 +262,7 @@ struct TestMyAllocator : CppUnit::TestFixture {
 			B.allocate(500);
 			CPPUNIT_ASSERT(false);
 		}
-		catch(std::bad_alloc::bad_alloc& e){
+		catch(std::bad_alloc& e){
 			CPPUNIT_ASSERT(true);
 		}
     }
@@ -308,7 +308,7 @@ struct TestMyAllocator : CppUnit::TestFixture {
     	CPPUNIT_ASSERT(B.valid());
     }
 
-	//Do not need tests for:
+	//Don't need tests for:
 	//Construct
 	//Destroy
 	//==
