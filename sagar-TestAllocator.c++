@@ -232,8 +232,8 @@ struct TestAllocator : CppUnit::TestFixture {
         x.view(x.a[28]) = 64;
         x.view(x.a[96]) = 64;
         x.deallocate((int*) &x.a[4], 0);
-        CPPUNIT_ASSERT(x.a[0] = 92);
-        CPPUNIT_ASSERT(x.a[96] = 92);
+        CPPUNIT_ASSERT(x.a[0] == 92);
+        CPPUNIT_ASSERT(x.a[96] == 92);
     }
     
     void test_deallocate_2 () {
@@ -245,8 +245,8 @@ struct TestAllocator : CppUnit::TestFixture {
         x.view(x.a[56]) = 36;
         x.view(x.a[96]) = 36;
         x.deallocate((int*) &x.a[32], 0);
-        CPPUNIT_ASSERT(x.a[0] = 92);
-        CPPUNIT_ASSERT(x.a[96] = 92);
+        CPPUNIT_ASSERT(x.a[0] == 92);
+        CPPUNIT_ASSERT(x.a[96] == 92);
     }
     
     void test_deallocate_3 () {
@@ -258,12 +258,12 @@ struct TestAllocator : CppUnit::TestFixture {
         x.view(x.a[56]) = -36;
         x.view(x.a[96]) = -36;
         x.deallocate((int*) &x.a[32], 0);
-        CPPUNIT_ASSERT(x.a[0] = -20);
-        CPPUNIT_ASSERT(x.a[24] = -20);
-        CPPUNIT_ASSERT(x.a[28] = 20);
-        CPPUNIT_ASSERT(x.a[52] = 20);
-        CPPUNIT_ASSERT(x.a[56] = -36);
-        CPPUNIT_ASSERT(x.a[96] = -36);
+        CPPUNIT_ASSERT(x.a[0] == -20);
+        CPPUNIT_ASSERT(x.a[24] == -20);
+        CPPUNIT_ASSERT(x.a[28] == 20);
+        CPPUNIT_ASSERT(x.a[52] == 20);
+        CPPUNIT_ASSERT(x.a[56] == -36);
+        CPPUNIT_ASSERT(x.a[96] == -36);
     }
     
     void test_deallocate_4 () {
@@ -275,10 +275,10 @@ struct TestAllocator : CppUnit::TestFixture {
         x.view(x.a[56]) = 36;
         x.view(x.a[96]) = 36;
         x.deallocate((int*) &x.a[32], 0);
-        CPPUNIT_ASSERT(x.a[0] = -20);
-        CPPUNIT_ASSERT(x.a[24] = -20);
-        CPPUNIT_ASSERT(x.a[28] = 64);
-        CPPUNIT_ASSERT(x.a[96] = 64);
+        CPPUNIT_ASSERT(x.a[0] == -20);
+        CPPUNIT_ASSERT(x.a[24] == -20);
+        CPPUNIT_ASSERT(x.a[28] == 64);
+        CPPUNIT_ASSERT(x.a[96] == 64);
     }
     
     void test_deallocate_5 () {
@@ -290,10 +290,10 @@ struct TestAllocator : CppUnit::TestFixture {
         x.view(x.a[36]) = 56;
         x.view(x.a[96]) = 56;
         x.deallocate((int*) &x.a[32], 0);
-        CPPUNIT_ASSERT(x.a[0] = -20);
-        CPPUNIT_ASSERT(x.a[24] = -20);
-        CPPUNIT_ASSERT(x.a[28] = 64);
-        CPPUNIT_ASSERT(x.a[96] = 64);
+        CPPUNIT_ASSERT(x.a[0] == -20);
+        CPPUNIT_ASSERT(x.a[24] == -20);
+        CPPUNIT_ASSERT(x.a[28] == 64);
+        CPPUNIT_ASSERT(x.a[96] == 64);
     }
     
     void test_deallocate_6 () {
@@ -306,10 +306,10 @@ struct TestAllocator : CppUnit::TestFixture {
         x.view(x.a[96]) = -36;
         CPPUNIT_ASSERT(x.valid());
         x.deallocate((int*) &x.a[32], 0);
-        CPPUNIT_ASSERT(x.a[0] = 48);
-        CPPUNIT_ASSERT(x.a[52] = 48);
-        CPPUNIT_ASSERT(x.a[56] = -36);
-        CPPUNIT_ASSERT(x.a[96] = -36);
+        CPPUNIT_ASSERT(x.a[0] == 48);
+        CPPUNIT_ASSERT(x.a[52] == 48);
+        CPPUNIT_ASSERT(x.a[56] == -36);
+        CPPUNIT_ASSERT(x.a[96] == -36);
     }
     
     void test_deallocate_7 () {
@@ -318,8 +318,8 @@ struct TestAllocator : CppUnit::TestFixture {
         x.view(x.a[96]) = -92;
         CPPUNIT_ASSERT(x.valid());
         x.deallocate((int*) &x.a[4], 0);
-        CPPUNIT_ASSERT(x.a[0] = 92);
-        CPPUNIT_ASSERT(x.a[96] = 92);
+        CPPUNIT_ASSERT(x.a[0] == 92);
+        CPPUNIT_ASSERT(x.a[96] == 92);
     }
     
     // -----
