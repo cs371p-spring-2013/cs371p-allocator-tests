@@ -279,8 +279,15 @@ struct OurAllocator : CppUnit::TestFixture {
      void test_allocate_1() {
         A x;
         const difference_type s = 1;
+        const value_type v = 2;
         try {
-            x.allocate(s);
+            const pointer p = x.allocate(s);
+            CPPUNIT_ASSERT(x.peek(x.a[0]) <= -(static_cast<signed int>(sizeof(value_type))));
+            CPPUNIT_ASSERT(x.valid());
+            x.construct(p, v);
+            CPPUNIT_ASSERT(*p == v);
+            x.destroy(p);
+            CPPUNIT_ASSERT(x.peek(x.a[0]) <= -(static_cast<signed int>(sizeof(value_type))));
             CPPUNIT_ASSERT(x.valid());
         } catch (exception& e) {
             CPPUNIT_ASSERT(strcmp(e.what(), "std::bad_alloc") == 0);
@@ -300,11 +307,27 @@ struct OurAllocator : CppUnit::TestFixture {
      void test_allocate_2() {
         A x;
         const difference_type s = 1;
+        const value_type v = 2;
         try {
-            x.allocate(s);
+            const pointer p = x.allocate(s);
+            difference_type front_header = x.peek(x.a[0]);
+            CPPUNIT_ASSERT(front_header <= -(static_cast<signed int>(sizeof(value_type))));
             CPPUNIT_ASSERT(x.valid());
-            x.allocate(s);
+            const pointer b = x.allocate(s);
+            difference_type back_header = x.peek(x.a[sizeof(value_type) + (2 * sizeof(int))]);
+            CPPUNIT_ASSERT(back_header <= -(static_cast<signed int>(sizeof(value_type))));
             CPPUNIT_ASSERT(x.valid());
+
+            x.construct(p, v);
+            CPPUNIT_ASSERT(*p == v);
+            x.destroy(p);
+            CPPUNIT_ASSERT(x.peek(x.a[0]) <= -(static_cast<signed int>(sizeof(value_type))));
+
+            x.construct(b, v);
+            CPPUNIT_ASSERT(*b == v);
+            x.destroy(b);
+            CPPUNIT_ASSERT(x.peek(x.a[sizeof(value_type) + (2 * sizeof(int))]) <= -(static_cast<signed int>(sizeof(value_type))));
+
         } catch (exception& e) {
             CPPUNIT_ASSERT(strcmp(e.what(), "std::bad_alloc") == 0);
             int k = 0;
@@ -507,108 +530,265 @@ struct OurAllocator : CppUnit::TestFixture {
      }
 
      void test_deallocate_5() {
+        // free middle
         A x;
-        if (sizeof(value_type) == 8 && x.a[0] == 92) {
+        if (sizeof(value_type) == 8 && x.a[0] == 92) {               
             const difference_type s = 1;
-            x.allocate(s);
-            const pointer p = x.allocate(s);
-            x.allocate(s);
-            x.deallocate(p, s);
-            difference_type header = x.peek(x.a[16]);
-            difference_type tail = x.peek(x.a[28]);
-            CPPUNIT_ASSERT(header == 8);
-            CPPUNIT_ASSERT(tail == 8);
-            header = x.peek(x.a[32]);
-            tail = x.peek(x.a[44]);
-            CPPUNIT_ASSERT(header == -8);
-            CPPUNIT_ASSERT(tail == -8);
-            header = x.peek(x.a[0]);
-            tail = x.peek(x.a[12]);
-            CPPUNIT_ASSERT(header == -8);
-            CPPUNIT_ASSERT(tail == -8);
-            CPPUNIT_ASSERT(x.valid());
+            try {
+                x.allocate(s);
+                const pointer p = x.allocate(s);
+                x.allocate(s);
+                x.deallocate(p, s);
+                difference_type header = x.peek(x.a[16]);
+                difference_type tail = x.peek(x.a[28]);
+                CPPUNIT_ASSERT(header == 8);
+                CPPUNIT_ASSERT(tail == 8);
+                header = x.peek(x.a[32]);
+                tail = x.peek(x.a[44]);
+                CPPUNIT_ASSERT(header == -8);
+                CPPUNIT_ASSERT(tail == -8);
+                header = x.peek(x.a[0]);
+                tail = x.peek(x.a[12]);
+                CPPUNIT_ASSERT(header == -8);
+                CPPUNIT_ASSERT(tail == -8);
+                CPPUNIT_ASSERT(x.valid());
+            } catch (exception& e) {
+                if (strcmp(e.what(), "std::bad_alloc") == 0) {
+                    CPPUNIT_ASSERT(false);
+                } else {
+                    throw e;
+                }
+            }
         }
      }
 
      void test_deallocate_6() {
+        // free right
         A x;
         if (sizeof(value_type) == 8 && x.a[0] == 92) {
             const difference_type s = 1;
-            x.allocate(s);
-            x.allocate(s);
-            const pointer p = x.allocate(s);
-            x.deallocate(p, s);
-            difference_type header = x.peek(x.a[32]);
-            difference_type tail = x.peek(x.a[96]);
-            CPPUNIT_ASSERT(header == 60);
-            CPPUNIT_ASSERT(tail == 60);
-            header = x.peek(x.a[0]);
-            tail = x.peek(x.a[12]);
-            CPPUNIT_ASSERT(header == -8);
-            CPPUNIT_ASSERT(tail == -8);
-            header = x.peek(x.a[16]);
-            tail = x.peek(x.a[28]);
-            CPPUNIT_ASSERT(header == -8);
-            CPPUNIT_ASSERT(tail == -8);
-            CPPUNIT_ASSERT(x.valid());
+            try {
+                x.allocate(s);
+                x.allocate(s);
+                const pointer p = x.allocate(s);
+                x.deallocate(p, s);
+                difference_type header = x.peek(x.a[32]);
+                difference_type tail = x.peek(x.a[96]);
+                CPPUNIT_ASSERT(header == 60);
+                CPPUNIT_ASSERT(tail == 60);
+                header = x.peek(x.a[0]);
+                tail = x.peek(x.a[12]);
+                CPPUNIT_ASSERT(header == -8);
+                CPPUNIT_ASSERT(tail == -8);
+                header = x.peek(x.a[16]);
+                tail = x.peek(x.a[28]);
+                CPPUNIT_ASSERT(header == -8);
+                CPPUNIT_ASSERT(tail == -8);
+                CPPUNIT_ASSERT(x.valid());
+            } catch (exception& e) {
+                if (strcmp(e.what(), "std::bad_alloc") == 0) {
+                    CPPUNIT_ASSERT(false);
+                } else {
+                    throw e;
+                }
+            }
         }
      }
 
      void test_deallocate_7() {
+        // free left
         A x;
         if (sizeof(value_type) == 8 && x.a[0] == 92) {
             const difference_type s = 1;
-            const pointer p = x.allocate(s);
-            x.allocate(s);
-            x.allocate(s);
-            x.deallocate(p, s);
-            difference_type header = x.peek(x.a[0]);
-            difference_type tail = x.peek(x.a[12]);
-            CPPUNIT_ASSERT(header == 8);
-            CPPUNIT_ASSERT(tail == 8);
-            header = x.peek(x.a[16]);
-            tail = x.peek(x.a[28]);
-            CPPUNIT_ASSERT(header == -8);
-            CPPUNIT_ASSERT(tail == -8);
-            header = x.peek(x.a[32]);
-            tail = x.peek(x.a[44]);
-            CPPUNIT_ASSERT(header == -8);
-            CPPUNIT_ASSERT(tail == -8);
-            CPPUNIT_ASSERT(x.valid());
+            try {
+                const pointer p = x.allocate(s);
+                x.allocate(s);
+                x.allocate(s);
+                x.deallocate(p, s);
+                difference_type header = x.peek(x.a[0]);
+                difference_type tail = x.peek(x.a[12]);
+                CPPUNIT_ASSERT(header == 8);
+                CPPUNIT_ASSERT(tail == 8);
+                header = x.peek(x.a[16]);
+                tail = x.peek(x.a[28]);
+                CPPUNIT_ASSERT(header == -8);
+                CPPUNIT_ASSERT(tail == -8);
+                header = x.peek(x.a[32]);
+                tail = x.peek(x.a[44]);
+                CPPUNIT_ASSERT(header == -8);
+                CPPUNIT_ASSERT(tail == -8);
+                CPPUNIT_ASSERT(x.valid());
+            } catch (exception& e) {
+                if (strcmp(e.what(), "std::bad_alloc") == 0) {
+                    CPPUNIT_ASSERT(false);
+                } else {
+                    throw e;
+                }
+            }
         }
      }
 
      void test_deallocate_8() {
+        // free middle last
         A x;
         if (sizeof(value_type) == 8 && x.a[0] == 92) {
             const difference_type s = 1;
-            const pointer p = x.allocate(s);
-            const pointer b = x.allocate(s);
-            const pointer e = x.allocate(s);
-            x.deallocate(p, s);
-            x.deallocate(e, s);
-            difference_type header = x.peek(x.a[0]);
-            difference_type tail = x.peek(x.a[12]);
-            CPPUNIT_ASSERT(header == 8);
-            CPPUNIT_ASSERT(tail == 8);
-            header = x.peek(x.a[16]);
-            tail = x.peek(x.a[28]);
-            CPPUNIT_ASSERT(header == -8);
-            CPPUNIT_ASSERT(tail == -8);
-            header = x.peek(x.a[32]);
-            tail = x.peek(x.a[96]);
-            CPPUNIT_ASSERT(header == 60);
-            CPPUNIT_ASSERT(tail == 60);
-            CPPUNIT_ASSERT(x.valid());
-            x.deallocate(b, s);
-            header = x.peek(x.a[0]);
-            tail = x.peek(x.a[96]);
-            CPPUNIT_ASSERT(header == 92);
-            CPPUNIT_ASSERT(tail == 92);
+            try {
+                const pointer p = x.allocate(s);
+                const pointer b = x.allocate(s);
+                const pointer e = x.allocate(s);
+                x.deallocate(p, s);
+                x.deallocate(e, s);
+                difference_type header = x.peek(x.a[0]);
+                difference_type tail = x.peek(x.a[12]);
+                CPPUNIT_ASSERT(header == 8);
+                CPPUNIT_ASSERT(tail == 8);
+                header = x.peek(x.a[16]);
+                tail = x.peek(x.a[28]);
+                CPPUNIT_ASSERT(header == -8);
+                CPPUNIT_ASSERT(tail == -8);
+                header = x.peek(x.a[32]);
+                tail = x.peek(x.a[96]);
+                CPPUNIT_ASSERT(header == 60);
+                CPPUNIT_ASSERT(tail == 60);
+                CPPUNIT_ASSERT(x.valid());
+                x.deallocate(b, s);
+                header = x.peek(x.a[0]);
+                tail = x.peek(x.a[96]);
+                CPPUNIT_ASSERT(header == 92);
+                CPPUNIT_ASSERT(tail == 92);
+            } catch (exception& e) {
+                if (strcmp(e.what(), "std::bad_alloc") == 0) {
+                    CPPUNIT_ASSERT(false);
+                } else {
+                    throw e;
+                }
+            }
         }
      }
 
-    // make a test case for the very right-most edge of the array
+     void test_deallocate_9() {
+        // free left to right
+        A x;
+        if (sizeof(value_type) == 8 && x.a[0] == 92) {
+            const difference_type s = 3;
+            try {
+                const pointer p = x.allocate(s);
+                const pointer b = x.allocate(s);
+                const pointer e = x.allocate(s);
+                x.deallocate(p, s);
+                difference_type header = x.peek(x.a[0]);
+                difference_type tail = x.peek(x.a[28]);
+                CPPUNIT_ASSERT(header == 24);
+                CPPUNIT_ASSERT(tail == 24);
+                header = x.peek(x.a[32]);
+                tail = x.peek(x.a[60]);
+                CPPUNIT_ASSERT(header == -24);
+                CPPUNIT_ASSERT(tail == -24);
+                header = x.peek(x.a[64]);
+                tail = x.peek(x.a[96]);
+                CPPUNIT_ASSERT(header == -28);
+                CPPUNIT_ASSERT(tail == -28);
+	            x.deallocate(b, s);
+                header = x.peek(x.a[0]);
+                tail = x.peek(x.a[60]);
+                CPPUNIT_ASSERT(header == 56);
+                CPPUNIT_ASSERT(tail == 56);
+                header = x.peek(x.a[64]);
+                tail = x.peek(x.a[96]);
+                CPPUNIT_ASSERT(header == -28);
+                CPPUNIT_ASSERT(tail == -28);
+	            x.deallocate(e, s);
+                header = x.peek(x.a[0]);
+                tail = x.peek(x.a[96]);
+                CPPUNIT_ASSERT(header == 92);
+                CPPUNIT_ASSERT(tail == 92);
+            } catch (exception& e) {
+                if (strcmp(e.what(), "std::bad_alloc") == 0) {
+                    CPPUNIT_ASSERT(false);
+                } else {
+                    throw e;
+                }
+            }
+        }
+     }
+     void test_deallocate_10() {
+        // free right to left
+        A x;
+        if (sizeof(value_type) == 8 && x.a[0] == 92) {
+            const difference_type s = 3;
+            try {
+                const pointer p = x.allocate(s);
+                const pointer b = x.allocate(s);
+                const pointer e = x.allocate(s);
+                x.deallocate(e, s);
+                difference_type header = x.peek(x.a[0]);
+                difference_type tail = x.peek(x.a[28]);
+                CPPUNIT_ASSERT(header == -24);
+                CPPUNIT_ASSERT(tail == -24);
+                header = x.peek(x.a[32]);
+                tail = x.peek(x.a[60]);
+                CPPUNIT_ASSERT(header == -24);
+                CPPUNIT_ASSERT(tail == -24);
+                header = x.peek(x.a[64]);
+                tail = x.peek(x.a[96]);
+                CPPUNIT_ASSERT(header == 28);
+                CPPUNIT_ASSERT(tail == 28);
+	            x.deallocate(b, s);
+                header = x.peek(x.a[0]);
+                tail = x.peek(x.a[28]);
+                CPPUNIT_ASSERT(header == -24);
+                CPPUNIT_ASSERT(tail == -24);
+                header = x.peek(x.a[32]);
+                tail = x.peek(x.a[96]);
+                CPPUNIT_ASSERT(header == 60);
+                CPPUNIT_ASSERT(tail == 60);
+	            x.deallocate(p, s);
+                header = x.peek(x.a[0]);
+                tail = x.peek(x.a[96]);
+                CPPUNIT_ASSERT(header == 92);
+                CPPUNIT_ASSERT(tail == 92);
+            } catch (exception& e) {
+                if (strcmp(e.what(), "std::bad_alloc") == 0) {
+                    CPPUNIT_ASSERT(false);
+                } else {
+                    throw e;
+                }
+            }
+        }
+     }
+
+     void test_deallocate_11() {
+        // free edges
+        A x;
+        if (sizeof(value_type) == 1 && x.a[0] == 92) {
+            const difference_type s = 42;
+            try {
+                const pointer p = x.allocate(s);
+                const pointer b = x.allocate(s);
+                x.deallocate(p, s);
+                difference_type header = x.peek(x.a[0]);
+                difference_type tail = x.peek(x.a[46]);
+                CPPUNIT_ASSERT(header == 42);
+                CPPUNIT_ASSERT(tail == 42);
+                header = x.peek(x.a[50]);
+                tail = x.peek(x.a[96]);
+                CPPUNIT_ASSERT(header == -42);
+                CPPUNIT_ASSERT(tail == -42);
+                x.deallocate(b, s);
+                header = x.peek(x.a[0]);
+                tail = x.peek(x.a[96]);
+                CPPUNIT_ASSERT(header == 92);
+                CPPUNIT_ASSERT(tail == 92);
+            } catch (exception& e) {
+                if (strcmp(e.what(), "std::bad_alloc") == 0) {
+                    CPPUNIT_ASSERT(false);
+                } else {
+                    throw e;
+                }
+            }
+        }
+     }
 
     // -----
     // suite
@@ -645,6 +825,9 @@ struct OurAllocator : CppUnit::TestFixture {
     CPPUNIT_TEST(test_deallocate_6);
     CPPUNIT_TEST(test_deallocate_7);
     CPPUNIT_TEST(test_deallocate_8);
+    CPPUNIT_TEST(test_deallocate_9);
+    CPPUNIT_TEST(test_deallocate_10);
+    CPPUNIT_TEST(test_deallocate_11);
     CPPUNIT_TEST_SUITE_END();};
 
 // ----
@@ -660,7 +843,15 @@ int main () {
 
     tr.addTest(TestAllocator< std::allocator<int> >::suite());
     tr.addTest(TestAllocator< std::allocator<double> >::suite());
+    tr.addTest(TestAllocator< Allocator<char, 100> >::suite());
+    tr.addTest(TestAllocator< Allocator<short, 100> >::suite());
+    tr.addTest(TestAllocator< Allocator<int, 100> >::suite());
+    tr.addTest(TestAllocator< Allocator<double, 100> >::suite());
+    tr.addTest(TestAllocator< Allocator<long, 100> >::suite());
 
+    tr.addTest(OurAllocator< Allocator<char, 9> >::suite());
+    tr.addTest(OurAllocator< Allocator<char, 50> >::suite());
+    tr.addTest(OurAllocator< Allocator<char, 100> >::suite());
     tr.addTest(OurAllocator< Allocator<short, 10> >::suite());
     tr.addTest(OurAllocator< Allocator<short, 100> >::suite());
     tr.addTest(OurAllocator< Allocator<int, 100> >::suite());
@@ -669,6 +860,7 @@ int main () {
     tr.addTest(OurAllocator< Allocator<double, 24> >::suite());
     tr.addTest(OurAllocator< Allocator<double, 49> >::suite());
     tr.addTest(OurAllocator< Allocator<double, 100> >::suite());
+    tr.addTest(OurAllocator< Allocator<long, 100> >::suite());
 
     tr.run();
 
