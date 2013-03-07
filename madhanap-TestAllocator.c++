@@ -1,7 +1,8 @@
 // ------------------------------------
 // projects/allocator/TestAllocator.c++
 // Copyright (C) 2013
-// Glenn P. Downing
+// Hyunchel Kim
+// Manoj Dhanapal
 // ------------------------------------
 
 /*
@@ -33,6 +34,60 @@ To test the program:
 #define class struct
 
 #include "Allocator.h"
+
+// -------------
+// StructAllocator
+// -------------
+
+struct y {
+  long x;
+  char t;
+
+  y(): x(0), t(0) { }
+  y(const y& r): x(r.x), t(r.t) { }
+  ~y() {
+     x = 0;
+     t = 0;
+  }
+};
+
+template <typename A>
+struct StructAllocator : CppUnit::TestFixture {
+    // --------
+    // typedefs
+    // --------
+
+    typedef typename A::size_type       size_type;
+    typedef typename A::value_type      value_type;
+    typedef typename A::difference_type difference_type;
+    typedef typename A::pointer         pointer;
+
+    // --------
+    // test_one
+    // --------
+
+    void test_struct () {
+        A x;
+        const difference_type s = 1;
+              value_type      v;
+                            v.x = 423;
+                            v.t = 127;
+        const pointer         p = x.allocate(s);
+        x.construct(p, v);
+        CPPUNIT_ASSERT(p->x == 423);
+        CPPUNIT_ASSERT(p->t == 127);
+        x.destroy(p);
+        CPPUNIT_ASSERT(p->x == 0);
+        CPPUNIT_ASSERT(p->t == 0);
+        x.deallocate(p, s);}
+
+    // -----
+    // suite
+    // -----
+
+    CPPUNIT_TEST_SUITE(StructAllocator);
+    CPPUNIT_TEST(test_struct);
+    CPPUNIT_TEST_SUITE_END();};
 
 // -------------
 // TestAllocator
@@ -97,6 +152,10 @@ struct TestAllocator : CppUnit::TestFixture {
     CPPUNIT_TEST(test_one);
     CPPUNIT_TEST(test_ten);
     CPPUNIT_TEST_SUITE_END();};
+
+// ------------
+// OurAllocator
+// ------------
 
 template <typename A>
 struct OurAllocator : CppUnit::TestFixture {
@@ -454,24 +513,27 @@ int main () {
     CppUnit::TextTestRunner tr;
 
     tr.addTest(TestAllocator< std::allocator<char> >::suite());
-    tr.addTest(TestAllocator< Allocator<char, 100> >::suite()); // uncomment!
-    tr.addTest(OurAllocator< Allocator<char, 100> >::suite()); // uncomment!
+    tr.addTest(TestAllocator< Allocator<char, 100> >::suite());
+    tr.addTest(OurAllocator< Allocator<char, 100> >::suite());
 
     tr.addTest(TestAllocator< std::allocator<short> >::suite());
-    tr.addTest(TestAllocator< Allocator<short, 100> >::suite()); // uncomment!
-    tr.addTest(OurAllocator< Allocator<short, 100> >::suite()); // uncomment!
+    tr.addTest(TestAllocator< Allocator<short, 100> >::suite());
+    tr.addTest(OurAllocator< Allocator<short, 100> >::suite());
 
     tr.addTest(TestAllocator< std::allocator<int> >::suite());
-    tr.addTest(TestAllocator< Allocator<int, 100> >::suite()); // uncomment!
-    tr.addTest(OurAllocator< Allocator<int, 100> >::suite()); // uncomment!
+    tr.addTest(TestAllocator< Allocator<int, 100> >::suite());
+    tr.addTest(OurAllocator< Allocator<int, 100> >::suite());
 
     tr.addTest(TestAllocator< std::allocator<double> >::suite());
-    tr.addTest(TestAllocator< Allocator<double, 100> >::suite()); // uncomment!
-    tr.addTest(OurAllocator< Allocator<double, 100> >::suite()); // uncomment!
+    tr.addTest(TestAllocator< Allocator<double, 100> >::suite());
+    tr.addTest(OurAllocator< Allocator<double, 100> >::suite());
 
     tr.addTest(TestAllocator< std::allocator<float> >::suite());
-    tr.addTest(TestAllocator< Allocator<float, 200> >::suite()); // uncomment!
-    tr.addTest(OurAllocator< Allocator<float, 200> >::suite()); // uncomment!
+    tr.addTest(TestAllocator< Allocator<float, 200> >::suite());
+    tr.addTest(OurAllocator< Allocator<float, 200> >::suite());
+
+    tr.addTest(StructAllocator< std::allocator<y> >::suite());
+    tr.addTest(StructAllocator< Allocator<y, 200> >::suite());
 
     tr.run();
 
