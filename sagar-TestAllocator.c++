@@ -90,7 +90,7 @@ struct TestAllocator : CppUnit::TestFixture {
             CPPUNIT_ASSERT(*p == v);
             x.destroy(p);
             x.deallocate(p, s);
-        } catch (bad_alloc& ba) {
+        } catch (std::bad_alloc& ba) {
             CPPUNIT_ASSERT(strcmp(ba.what(), "std::bad_alloc") == 0);
         }
     }
@@ -184,7 +184,7 @@ struct TestAllocator : CppUnit::TestFixture {
             const difference_type s = 100;
             x.allocate(s);
             CPPUNIT_ASSERT(false);
-        } catch (bad_alloc& ba) {
+        } catch (std::bad_alloc& ba) {
             CPPUNIT_ASSERT(strcmp(ba.what(), "std::bad_alloc") == 0);
         }
     }
@@ -207,7 +207,7 @@ struct TestAllocator : CppUnit::TestFixture {
             const difference_type s = 2;
             x.allocate(s);
             CPPUNIT_ASSERT(false);
-        } catch (bad_alloc& ba) {
+        } catch (std::bad_alloc& ba) {
             CPPUNIT_ASSERT(strcmp(ba.what(), "std::bad_alloc") == 0);
         }
     }
@@ -217,7 +217,7 @@ struct TestAllocator : CppUnit::TestFixture {
             Allocator<int, 4> x;
             const difference_type s = 1;
             x.allocate(s);
-        } catch (bad_alloc& ba) {
+        } catch (std::bad_alloc& ba) {
             CPPUNIT_ASSERT(strcmp(ba.what(), "std::bad_alloc") == 0);
         }
     }
