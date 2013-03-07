@@ -1,0 +1,23 @@
+valgrind TestAllocator
+==24325== Memcheck, a memory error detector
+==24325== Copyright (C) 2002-2011, and GNU GPL'd, by Julian Seward et al.
+==24325== Using Valgrind-3.7.0 and LibVEX; rerun with -h for copyright info
+==24325== Command: TestAllocator
+==24325== 
+TestAllocator.c++
+..............................................................................................................
+
+
+OK (110 tests)
+
+
+Done.
+==24325== 
+==24325== HEAP SUMMARY:
+==24325==     in use at exit: 0 bytes in 0 blocks
+==24325==   total heap usage: 3,727 allocs, 3,727 frees, 482,669 bytes allocated
+==24325== 
+==24325== All heap blocks were freed -- no leaks are possible
+==24325== 
+==24325== For counts of detected and suppressed errors, rerun with: -v
+==24325== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 2 from 2)
