@@ -1,0 +1,28 @@
+==19196== Memcheck, a memory error detector
+==19196== Copyright (C) 2002-2011, and GNU GPL'd, by Julian Seward et al.
+==19196== Using Valgrind-3.7.0 and LibVEX; rerun with -h for copyright info
+==19196== Command: TestAllocator
+==19196== 
+TestAllocator.c++
+........................................................
+
+
+OK (56 tests)
+
+
+Done.
+==19196== 
+==19196== HEAP SUMMARY:
+==19196==     in use at exit: 122,880 bytes in 6 blocks
+==19196==   total heap usage: 1,812 allocs, 1,806 frees, 349,868 bytes allocated
+==19196== 
+==19196== LEAK SUMMARY:
+==19196==    definitely lost: 0 bytes in 0 blocks
+==19196==    indirectly lost: 0 bytes in 0 blocks
+==19196==      possibly lost: 0 bytes in 0 blocks
+==19196==    still reachable: 122,880 bytes in 6 blocks
+==19196==         suppressed: 0 bytes in 0 blocks
+==19196== Rerun with --leak-check=full to see details of leaked memory
+==19196== 
+==19196== For counts of detected and suppressed errors, rerun with: -v
+==19196== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 4 from 4)
