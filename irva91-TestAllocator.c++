@@ -87,27 +87,7 @@ struct TestAllocator : CppUnit::TestFixture {
             x.destroy(e);}
         x.deallocate(b, s);}
 
-    //
-    // constructor tests
-    //
-    void test_constructor_1(){
-        A x;
-        CPPUNIT_ASSERT(sizeof(x.a) == 100);
-    }
 
-    void test_constructor_2(){
-        A x;
-        CPPUNIT_ASSERT(sizeof(x.a) == 100);
-        int& sentinel = x.view(x.a[0]);
-        CPPUNIT_ASSERT(sentinel == 92);
-    }
-
-    void test_constructor_3(){
-        A x;
-        CPPUNIT_ASSERT(sizeof(x.a) == 100);
-        int& sentinel = x.view(x.a[96]);
-        CPPUNIT_ASSERT(sentinel == 92);
-    }
 
     //
     // allocate tests
@@ -330,15 +310,89 @@ struct TestAllocator : CppUnit::TestFixture {
         x.deallocate(p2, s);
     }
 
+    // -----
+    // suite
+    // -----
+
+    CPPUNIT_TEST_SUITE(TestAllocator);
+
+    // Downing tests
+    CPPUNIT_TEST(test_one);
+    CPPUNIT_TEST(test_ten);
+
+    // test allocate
+    CPPUNIT_TEST(test_allocate_1);
+    CPPUNIT_TEST(test_allocate_2);
+    CPPUNIT_TEST(test_allocate_3);
+    CPPUNIT_TEST(test_allocate_4);
+    CPPUNIT_TEST(test_allocate_5);
+
+    //test construct
+    CPPUNIT_TEST(test_construct_1);
+    CPPUNIT_TEST(test_construct_2);
+    CPPUNIT_TEST(test_construct_3);
+
+    //test destroy
+    CPPUNIT_TEST(test_destroy_1);
+    CPPUNIT_TEST(test_destroy_2);
+    CPPUNIT_TEST(test_destroy_3);
+
+    // test deallocate
+    CPPUNIT_TEST(test_deallocate_1);
+    CPPUNIT_TEST(test_deallocate_2);
+    CPPUNIT_TEST(test_deallocate_3);
+
+    CPPUNIT_TEST_SUITE_END();};
+
+template <typename A>
+struct TestSpecific : CppUnit::TestFixture {
+    // --------
+    // typedefs
+    // --------
+
+    typedef typename A::value_type      value_type;
+    typedef typename A::difference_type difference_type;
+    typedef typename A::pointer         pointer;
+
+    //
+    // constructor tests
+    //
+    void test_constructor_1(){
+        A x;
+        CPPUNIT_ASSERT(sizeof(x.a) == 100);
+    }
+
+    void test_constructor_2(){
+        A x;
+        CPPUNIT_ASSERT(sizeof(x.a) == 100);
+        int& sentinel = x.view(x.a[0]);
+        CPPUNIT_ASSERT(sentinel == 92);
+    }
+
+    void test_constructor_3(){
+        A x;
+        CPPUNIT_ASSERT(sizeof(x.a) == 100);
+        int& sentinel = x.view(x.a[96]);
+        CPPUNIT_ASSERT(sentinel == 92);
+    } 
+
     void test_valid_1 () {
         A x;
-        x.a[0] = 1;
-        CPPUNIT_ASSERT (!x.valid ());
+        CPPUNIT_ASSERT (x.valid ());
     }
 
     void test_valid_2 (){
         A x;
+        const difference_type s = 1000;
         CPPUNIT_ASSERT(x.valid());
+        try{
+            x.allocate(s);
+            CPPUNIT_ASSERT(false);
+        }
+        catch(...){
+            CPPUNIT_ASSERT(true);
+            CPPUNIT_ASSERT(x.valid());
+        }
     }
 
     void test_valid_3 (){
@@ -346,8 +400,14 @@ struct TestAllocator : CppUnit::TestFixture {
         const difference_type s = 10;
         x.allocate(s);
         CPPUNIT_ASSERT(x.valid());
-        x.a[0] = -1;
-        CPPUNIT_ASSERT(!x.valid());
+        try{
+            x.allocate(s);
+            CPPUNIT_ASSERT(x.valid());
+        }
+        catch(...){
+            CPPUNIT_ASSERT(sizeof(value_type) == 8);
+            CPPUNIT_ASSERT(x.valid());
+        }
     }
 
     void test_view_1(){
@@ -375,54 +435,22 @@ struct TestAllocator : CppUnit::TestFixture {
     // suite
     // -----
 
-    CPPUNIT_TEST_SUITE(TestAllocator);
-
-    // Downing tests
-    CPPUNIT_TEST(test_one);
-    CPPUNIT_TEST(test_ten);
+    CPPUNIT_TEST_SUITE(TestSpecific);
 
     // test constructors
-    // only run for our implementation of Allocator
-    // CPPUNIT_TEST(test_constructor_1);
-    // CPPUNIT_TEST(test_constructor_2);
-    // CPPUNIT_TEST(test_constructor_3);
-
-    // test allocate
-    CPPUNIT_TEST(test_allocate_1);
-    CPPUNIT_TEST(test_allocate_2);
-    CPPUNIT_TEST(test_allocate_3);
-    CPPUNIT_TEST(test_allocate_4);
-    CPPUNIT_TEST(test_allocate_5);
-
-    //test construct
-    CPPUNIT_TEST(test_construct_1);
-    CPPUNIT_TEST(test_construct_2);
-    CPPUNIT_TEST(test_construct_3);
-
-    //test destroy
-    CPPUNIT_TEST(test_destroy_1);
-    CPPUNIT_TEST(test_destroy_2);
-    CPPUNIT_TEST(test_destroy_3);
-
-    // test deallocate
-    CPPUNIT_TEST(test_deallocate_1);
-    CPPUNIT_TEST(test_deallocate_2);
-    CPPUNIT_TEST(test_deallocate_3);
+    CPPUNIT_TEST(test_constructor_1);
+    CPPUNIT_TEST(test_constructor_2);
+    CPPUNIT_TEST(test_constructor_3);
 
     // test valid
-    // only run for our implementation of Allocator
-    // CPPUNIT_TEST(test_valid_1);
-    // CPPUNIT_TEST(test_valid_2);
-    // CPPUNIT_TEST(test_valid_3);
+    CPPUNIT_TEST(test_valid_1);
+    CPPUNIT_TEST(test_valid_2);
+    CPPUNIT_TEST(test_valid_3);
 
     // test view
-    // only run for our implementation of Allocator
-    // CPPUNIT_TEST(test_view_1);
-    // CPPUNIT_TEST(test_view_2);
-    // CPPUNIT_TEST(test_view_3);
-
-    // test constructor
-
+    CPPUNIT_TEST(test_view_1);
+    CPPUNIT_TEST(test_view_2);
+    CPPUNIT_TEST(test_view_3);
     CPPUNIT_TEST_SUITE_END();};
 
 // ----
@@ -441,6 +469,10 @@ int main () {
 
     tr.addTest(TestAllocator< std::allocator<double> >::suite());
     tr.addTest(TestAllocator< Allocator<double, 100> >::suite()); // uncomment!
+
+    // test specific to allocator
+    tr.addTest(TestSpecific< Allocator<int, 100> >::suite()); // uncomment!
+    tr.addTest(TestSpecific< Allocator<double, 100> >::suite()); // uncomment!
 
     tr.run();
 
