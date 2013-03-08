@@ -63,7 +63,139 @@ struct TestAllocator : CppUnit::TestFixture {
         x.destroy(p);
         x.deallocate(p, s);
     }
+    
+    // --------
+    // test_two
+    // --------
 
+      void test_two(){
+        A x;
+        const difference_type s = 1;
+        const value_type v1 = 5;
+        const pointer p1 = x.allocate(s);
+
+        x.construct(p1, v1);
+        CPPUNIT_ASSERT(*p1 == v1);
+
+        const value_type v2 = 8;
+        const pointer p2 = x.allocate(s);
+        x.construct(p2, v2);
+        CPPUNIT_ASSERT(*p2 == v2);
+        x.destroy(p2);
+        x.deallocate(p2, s);
+    }
+
+    // ----------
+    // test_three
+    // ----------
+
+
+    void test_three(){
+        A x;
+        const difference_type s = 1;
+        const value_type v1 = 5;
+        const pointer p1 = x.allocate(s);
+
+        x.construct(p1, v1);
+        CPPUNIT_ASSERT(*p1 == v1);
+
+        const value_type v2 = 8;
+        const pointer p2 = x.allocate(s);
+        x.construct(p2, v2);
+        CPPUNIT_ASSERT(*p2 == v2);
+
+        x.destroy(p1);
+        x.deallocate(p1, s);
+    }
+
+    // ----------
+    // test_four
+    // ----------
+
+    void test_four(){
+        A x;
+        const difference_type s = 1;
+        const value_type v = 2;
+
+        const pointer p1 = x.allocate(s);
+        x.construct(p1, v);
+        const pointer p2 = x.allocate(s);
+        x.construct(p2, v);
+        const pointer p3 = x.allocate(s);
+        x.construct(p3, v);
+
+        x.destroy(p1);
+        x.deallocate(p1, s);
+
+        x.destroy(p3);
+        x.deallocate(p3, s);
+
+        x.destroy(p2);
+        x.deallocate(p2, s);
+    }
+
+    // ----------
+    // test_five
+    // ----------
+
+   void test_five(){
+        A x;
+        const difference_type s = 6;
+        const value_type v = 2;
+        const pointer p = x.allocate(s);
+
+        pointer b = p;
+        pointer e = p + s;
+
+        while (b != e){
+            x.construct(b, v);
+            ++b;
+        }
+        b = p;
+        CPPUNIT_ASSERT(std::count(b, e, v) == s);
+        b = p;
+        while (b != e){
+            x.destroy(b);
+            ++b;
+        }
+    }
+
+    // ----------
+    // test_six
+    // ----------
+
+    void test_six(){
+        A x;
+        const difference_type s = 3;
+        const value_type v = 2;
+        const pointer p = x.allocate(s);
+
+        x.construct(p, v);
+        x.destroy(p);
+        CPPUNIT_ASSERT(true);
+    }
+
+    // ----------
+    // test_seven
+    // ----------
+
+    void test_seven(){
+        A x;
+        const difference_type s = 1;
+        const value_type v = 2;
+        const pointer p = x.allocate(s);
+
+        x.construct(p, v);
+        x.destroy(p);
+        CPPUNIT_ASSERT(true);
+        try{
+            x.destroy(p + 1);
+            CPPUNIT_ASSERT(true);
+        }
+        catch(...){
+            CPPUNIT_ASSERT(false);
+        }
+    }
     // --------
     // test_ten
     // --------
@@ -100,7 +232,13 @@ struct TestAllocator : CppUnit::TestFixture {
 
     CPPUNIT_TEST_SUITE(TestAllocator);
     
-    CPPUNIT_TEST(test_one);
+    CPPUNIT_TEST(test_one); 
+    CPPUNIT_TEST(test_two);
+    CPPUNIT_TEST(test_three);
+    CPPUNIT_TEST(test_four);
+    CPPUNIT_TEST(test_five);
+    CPPUNIT_TEST(test_six);
+    CPPUNIT_TEST(test_seven);
     CPPUNIT_TEST(test_ten);
     
     CPPUNIT_TEST_SUITE_END();
@@ -122,7 +260,7 @@ struct MyTests : CppUnit::TestFixture {
     // ------------
 
     void test_valid_1(){
-      A x;
+    	A x;
 	CPPUNIT_ASSERT(x.valid());
 	const difference_type s = 20;
 	if (sizeof(value_type) == 4){
