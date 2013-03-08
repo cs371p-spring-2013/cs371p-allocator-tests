@@ -114,13 +114,12 @@ struct MyTests : CppUnit::TestFixture
   typedef typename A::value_type      value_type;
   typedef typename A::difference_type difference_type;
   typedef typename A::pointer         pointer;
-  const int MYSIZE = sizeof (value_type);
 
   void valid1 ()
   {
     A valid;
     int* addr = reinterpret_cast <int*> (valid.allocate (1) + 1);
-    *addr = -MYSIZE;
+    *addr = -(int) sizeof (value_type);
     CPPUNIT_ASSERT (valid.isValid ());
   }
 
@@ -129,8 +128,8 @@ struct MyTests : CppUnit::TestFixture
     A valid;
     int* addr1 = reinterpret_cast <int*> (valid.allocate (5) + 5);
     int* addr2 = reinterpret_cast <int*> (valid.allocate (3) + 3);
-    *addr1 = -MYSIZE * 5;
-    *addr2 = -MYSIZE * 3;
+    *addr1 = -(int) sizeof (value_type) * 5;
+    *addr2 = -(int) sizeof (value_type) * 3;
     CPPUNIT_ASSERT (valid.isValid ());
   }
 
@@ -146,9 +145,9 @@ struct MyTests : CppUnit::TestFixture
   {
     A invalid;
     int* addr = reinterpret_cast <int*> (invalid.allocate (1) + 1);
-    *addr = -MYSIZE;
+    *addr = -(int) sizeof (value_type);
     int* badAddr = reinterpret_cast <int*> (invalid.allocate (2) + 2);
-    *badAddr = -MYSIZE;
+    *badAddr = -(int) sizeof (value_type);
     CPPUNIT_ASSERT (!invalid.isValid ());
   }
 
@@ -156,9 +155,9 @@ struct MyTests : CppUnit::TestFixture
   {
     A invalid;
     int* badAddr = reinterpret_cast <int*> (invalid.allocate (1) + 1);
-    *badAddr = -MYSIZE;
+    *badAddr = -(int) sizeof (value_type);
     invalid.allocate (2);
-    *badAddr = -MYSIZE * 2;
+    *badAddr = -(int) sizeof (value_type) * 2;
     CPPUNIT_ASSERT (!invalid.isValid ());
   }
 
@@ -167,8 +166,8 @@ struct MyTests : CppUnit::TestFixture
     A invalid;
     int* badAddr1 = reinterpret_cast <int*> (invalid.allocate (5) + 5);
     int* badAddr2 = reinterpret_cast <int*> (invalid.allocate (3) + 3);
-    *badAddr1 = -MYSIZE * 5;
-    *badAddr2 = -MYSIZE * 5;
+    *badAddr1 = -(int) sizeof (value_type) * 5;
+    *badAddr2 = - (int) sizeof (value_type) * 5;
     CPPUNIT_ASSERT (!invalid.isValid ());
   }
 
@@ -588,13 +587,13 @@ int main () {
     tr.addTest(TestAllocator< std::allocator<double> >::suite());
     tr.addTest(TestAllocator< Allocator<double, 100> >::suite());
 
-    tr.addTest (FailureCases <Allocator <int, 1>>::suite ());
-    tr.addTest (FailureCases <Allocator <double, 1>>::suite ());
-    tr.addTest (FailureCases <Allocator <int, 11>>::suite ());
-    tr.addTest (FailureCases <Allocator <double, 15>>::suite ());
+    tr.addTest (FailureCases < Allocator <int, 1> >::suite ());
+    tr.addTest (FailureCases < Allocator <double, 1> >::suite ());
+    tr.addTest (FailureCases < Allocator <int, 11> >::suite ());
+    tr.addTest (FailureCases < Allocator <double, 15> >::suite ());
 
-    tr.addTest (MyTests <Allocator <int, 100>>::suite ());
-    tr.addTest (MyTests <Allocator <double, 100>>::suite ());
+    tr.addTest (MyTests < Allocator <int, 100> >::suite ());
+    tr.addTest (MyTests < Allocator <double, 100> >::suite ());
 
     tr.run();
 

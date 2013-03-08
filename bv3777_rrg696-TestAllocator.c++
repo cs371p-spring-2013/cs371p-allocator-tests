@@ -30,11 +30,11 @@ To test the program:
 #include "cppunit/TestFixture.h"             // TestFixture
 #include "cppunit/TextTestRunner.h"          // TestRunner
 
-#include "Allocator.h"
-
 #define private public
 #define protected public
 #define class struct
+
+#include "Allocator.h"
 
 // -------------
 // TestAllocator
@@ -54,6 +54,8 @@ struct TestAllocator : CppUnit::TestFixture {
     //------------------
     // getTypeSize Tests
     //------------------
+        
+    /********  TESTS SPECIFIC TO OUR ALLOCATOR  **********/
     
     void test_getTypeSize_1 (){
         Allocator<int, 200> a;
@@ -555,6 +557,8 @@ struct TestAllocator : CppUnit::TestFixture {
         CPPUNIT_ASSERT(E.valid() == true);
     }
     
+    /******** GENERIC TESTS START HERE **********/
+    
     // --------
     // test_one
     // --------
@@ -568,6 +572,33 @@ struct TestAllocator : CppUnit::TestFixture {
         CPPUNIT_ASSERT(*p == v);
         x.destroy(p);
         x.deallocate(p, s);}
+    
+    // --------
+    // test_five
+    // --------
+    
+    void test_five () {
+        A x;
+        const difference_type s = 5;
+        const value_type      v = 2;
+        const pointer         b = x.allocate(s);
+              pointer         e = b + s;
+              pointer         p = b;
+        try {
+            while (p != e) {
+                x.construct(p, v);
+                ++p;}}
+        catch (...) {
+            while (b != p) {
+                --p;
+                x.destroy(p);}
+            x.deallocate(b, s);
+            throw;}
+        CPPUNIT_ASSERT(std::count(b, e, v) == s);
+        while (b != e) {
+            --e;
+            x.destroy(e);}
+        x.deallocate(b, s);}
 
     // --------
     // test_ten
@@ -595,6 +626,34 @@ struct TestAllocator : CppUnit::TestFixture {
             --e;
             x.destroy(e);}
         x.deallocate(b, s);}
+    
+    // --------
+    // test_twenty
+    // --------
+
+    void test_twenty () {
+        A x;
+        const difference_type s = 20;
+        const value_type      v = 2;
+        const pointer         b = x.allocate(s);
+              pointer         e = b + s;
+              pointer         p = b;
+        try {
+            while (p != e) {
+                x.construct(p, v);
+                ++p;}}
+        catch (...) {
+            while (b != p) {
+                --p;
+                x.destroy(p);}
+            x.deallocate(b, s);
+            throw;}
+        CPPUNIT_ASSERT(std::count(b, e, v) == s);
+        while (b != e) {
+            --e;
+            x.destroy(e);}
+        x.deallocate(b, s);}
+    
 
     // -----
     // suite
@@ -635,7 +694,9 @@ struct TestAllocator : CppUnit::TestFixture {
     CPPUNIT_TEST(test_allocator_2);
     CPPUNIT_TEST(test_allocator_3);
     CPPUNIT_TEST(test_one);
+    CPPUNIT_TEST(test_five);
     CPPUNIT_TEST(test_ten);
+    CPPUNIT_TEST(test_twenty);
     CPPUNIT_TEST_SUITE_END();};
 
 // ----
@@ -650,11 +711,20 @@ int main () {
     CppUnit::TextTestRunner tr;
 
     tr.addTest(TestAllocator< std::allocator<int> >::suite());
-//  tr.addTest(TestAllocator< Allocator<int, 100> >::suite()); // uncomment!
+    tr.addTest(TestAllocator< Allocator<int, 100> >::suite()); // uncomment!
 
     tr.addTest(TestAllocator< std::allocator<double> >::suite());
-//  tr.addTest(TestAllocator< Allocator<double, 100> >::suite()); // uncomment!
+    tr.addTest(TestAllocator< Allocator<double, 1000> >::suite()); // uncomment!
 
+    tr.addTest(TestAllocator< std::allocator<char> >::suite());
+    tr.addTest(TestAllocator< Allocator<char, 100> >::suite());
+    
+    tr.addTest(TestAllocator< std::allocator<long> >::suite());
+    tr.addTest(TestAllocator< Allocator<long, 3000> >::suite());
+    
+    tr.addTest(TestAllocator< std::allocator<long long> >::suite());
+    tr.addTest(TestAllocator< Allocator<long long, 10000> >::suite());
+    
     tr.run();
 
     cout << "Done." << endl;

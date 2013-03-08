@@ -1,0 +1,9 @@
+valgrind TestAllocator
+TestAllocator.c++
+............................................................
+
+
+OK (60 tests)
+
+
+Done.

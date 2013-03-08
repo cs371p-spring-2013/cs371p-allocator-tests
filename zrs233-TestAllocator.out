@@ -1,0 +1,29 @@
+valgrind TestAllocator
+==11833== Memcheck, a memory error detector
+==11833== Copyright (C) 2002-2011, and GNU GPL'd, by Julian Seward et al.
+==11833== Using Valgrind-3.7.0 and LibVEX; rerun with -h for copyright info
+==11833== Command: TestAllocator
+==11833== 
+TestAllocator.c++
+......................................
+
+
+OK (38 tests)
+
+
+Done.
+==11833== 
+==11833== HEAP SUMMARY:
+==11833==     in use at exit: 122,880 bytes in 6 blocks
+==11833==   total heap usage: 937 allocs, 931 frees, 242,849 bytes allocated
+==11833== 
+==11833== LEAK SUMMARY:
+==11833==    definitely lost: 0 bytes in 0 blocks
+==11833==    indirectly lost: 0 bytes in 0 blocks
+==11833==      possibly lost: 0 bytes in 0 blocks
+==11833==    still reachable: 122,880 bytes in 6 blocks
+==11833==         suppressed: 0 bytes in 0 blocks
+==11833== Rerun with --leak-check=full to see details of leaked memory
+==11833== 
+==11833== For counts of detected and suppressed errors, rerun with: -v
+==11833== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 2 from 2)
