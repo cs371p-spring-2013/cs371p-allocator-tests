@@ -1,6 +1,4 @@
-make test
-make[1]: Entering directory `/v/filer4b/v38q001/ccoleman/Documents/CS371p/cs371p-allocator'
-TestAllocator
+valgrind TestAllocator
 TestAllocator.c++
 ..............
 
@@ -9,4 +7,3 @@ OK (14 tests)
 
 
 Done.
-make[1]: Leaving directory `/v/filer4b/v38q001/ccoleman/Documents/CS371p/cs371p-allocator'
