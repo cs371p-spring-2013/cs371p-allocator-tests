@@ -1,0 +1,43 @@
+==25732== Memcheck, a memory error detector
+==25732== Copyright (C) 2002-2011, and GNU GPL'd, by Julian Seward et al.
+==25732== Using Valgrind-3.7.0 and LibVEX; rerun with -h for copyright info
+==25732== Command: TestAllocator
+==25732== 
+TestAllocator.c++
+==25732== Conditional jump or move depends on uninitialised value(s)
+==25732==    at 0x40EF39: Allocator<double, 100>::deallocate(double*, int) (in /v/filer4b/v38q001/inbleric/371p/cs371p-allocator/TestAllocator)
+==25732==    by 0x408B50: TestAllocator<Allocator<double, 100> >::test_ten() (in /v/filer4b/v38q001/inbleric/371p/cs371p-allocator/TestAllocator)
+==25732==    by 0x410763: CppUnit::TestCaller<TestAllocator<Allocator<double, 100> > >::runTest() (in /v/filer4b/v38q001/inbleric/371p/cs371p-allocator/TestAllocator)
+==25732==    by 0x4E558E9: CppUnit::TestCaseMethodFunctor::operator()() const (in /usr/lib/libcppunit-1.12.so.1.0.0)
+==25732==    by 0x4E48E33: CppUnit::DefaultProtector::protect(CppUnit::Functor const&, CppUnit::ProtectorContext const&) (in /usr/lib/libcppunit-1.12.so.1.0.0)
+==25732==    by 0x4E51E66: CppUnit::ProtectorChain::protect(CppUnit::Functor const&, CppUnit::ProtectorContext const&) (in /usr/lib/libcppunit-1.12.so.1.0.0)
+==25732==    by 0x4E5C593: CppUnit::TestResult::protect(CppUnit::Functor const&, CppUnit::Test*, std::string const&) (in /usr/lib/libcppunit-1.12.so.1.0.0)
+==25732==    by 0x4E55687: CppUnit::TestCase::run(CppUnit::TestResult*) (in /usr/lib/libcppunit-1.12.so.1.0.0)
+==25732==    by 0x4E55DC2: CppUnit::TestComposite::doRunChildTests(CppUnit::TestResult*) (in /usr/lib/libcppunit-1.12.so.1.0.0)
+==25732==    by 0x4E55CE5: CppUnit::TestComposite::run(CppUnit::TestResult*) (in /usr/lib/libcppunit-1.12.so.1.0.0)
+==25732==    by 0x4E55DC2: CppUnit::TestComposite::doRunChildTests(CppUnit::TestResult*) (in /usr/lib/libcppunit-1.12.so.1.0.0)
+==25732==    by 0x4E55CE5: CppUnit::TestComposite::run(CppUnit::TestResult*) (in /usr/lib/libcppunit-1.12.so.1.0.0)
+==25732== 
+......................................
+
+
+OK (38 tests)
+
+
+Done.
+==25732== 
+==25732== HEAP SUMMARY:
+==25732==     in use at exit: 122,880 bytes in 6 blocks
+==25732==   total heap usage: 926 allocs, 920 frees, 240,741 bytes allocated
+==25732== 
+==25732== LEAK SUMMARY:
+==25732==    definitely lost: 0 bytes in 0 blocks
+==25732==    indirectly lost: 0 bytes in 0 blocks
+==25732==      possibly lost: 0 bytes in 0 blocks
+==25732==    still reachable: 122,880 bytes in 6 blocks
+==25732==         suppressed: 0 bytes in 0 blocks
+==25732== Rerun with --leak-check=full to see details of leaked memory
+==25732== 
+==25732== For counts of detected and suppressed errors, rerun with: -v
+==25732== Use --track-origins=yes to see where uninitialised values come from
+==25732== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 4 from 4)
